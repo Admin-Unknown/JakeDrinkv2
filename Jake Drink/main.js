@@ -1,52 +1,9 @@
 import './style.css'
-import Winwheel from Winwheel
+//import * as Winwheel from 'winwheel'
 import { setupCounter } from './counter.js'
 
 
-document.querySelector('#app').innerHTML = `
-<div align="center">
-<h1>Jake Drink</h1>
-<br />
-<p>
-    Have some fun playing the worlds greatest game!
-</p>
-<br />
-<p>&copy; Lauren Bywater 2016.</p>
-<br />
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-    <td>
-        <div class="power_controls">
-            <br />
-            <br />
-            <table class="power" cellpadding="10" cellspacing="0">
-                <tr>
-                    <th align="center">Power</th>
-                </tr>
-                <tr>
-                    <td width="78" align="center" id="pw3" onClick="powerSelected(3);">High</td>
-                </tr>
-                <tr>
-                    <td align="center" id="pw2" onClick="powerSelected(2);">Med</td>
-                </tr>
-                <tr>
-                    <td align="center" id="pw1" onClick="powerSelected(1);">Low</td>
-                </tr>
-            </table>
-            <br />
-            <img id="spin_button" src="spin_off.png" alt="Spin" onClick="startSpin();" />
-            <br /><br />
-            &nbsp;&nbsp;<a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset)
-        </div>
-    </td>
-    <td width="438" height="582" class="the_wheel" align="center" valign="center">
-        <canvas id="canvas" width="434" height="434">
-            <p style="color: white" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
-        </canvas>
-    </td>
-</tr>
-</table>
-`
+document.querySelector('#app').innerHTML = ``
 
 // setupCounter(document.querySelector('#counter'))
 
@@ -108,6 +65,10 @@ let wheelSpinning = false;
 // -------------------------------------------------------
 // Function to handle the onClick on the power buttons.
 // -------------------------------------------------------
+
+document.getElementById('pw1').addEventListener('click', function() { powerSelected(1); });
+document.getElementById('pw2').addEventListener('click', function() { powerSelected(2); });
+document.getElementById('pw3').addEventListener('click', function() { powerSelected(3); });
 function powerSelected(powerLevel)
 {
   // Ensure that power can't be changed while wheel is spinning.
@@ -142,6 +103,7 @@ function powerSelected(powerLevel)
 // -------------------------------------------------------
 // Click handler for spin button.
 // -------------------------------------------------------
+document.getElementById('spin_button').addEventListener('click', function() { startSpin(); });
 function startSpin()
 {
   // Ensure that spinning can't be clicked again while already running.
@@ -172,6 +134,7 @@ function startSpin()
 // -------------------------------------------------------
 // Function for reset button.
 // -------------------------------------------------------
+document.getElementById('reset_button').addEventListener('click', function() { resetWheel(); });
 function resetWheel()
 {
   theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
