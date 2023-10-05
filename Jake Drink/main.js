@@ -1,29 +1,71 @@
 import './style.css'
 
 
-document.querySelector('#app').innerHTML = ``
+document.querySelector('#app').innerHTML = `
+<div align="center">
+<div class="darkbk">
+<h1>Jake Drink</h1>
+<br />
+<p>
+    Have some fun playing the worlds greatest game!
+</p>
+<br />
+<p>&copy; Lauren Bywater 2016-2023.</p>
+<br />
+</div>
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+    <td>
+        <div class="power_controls">
+            <br />
+            <br />
+            <table class="power" cellpadding="10" cellspacing="0">
+                <tr>
+                    <th align="center">Power</th>
+                </tr>
+                <tr>
+                    <td width="78" align="center" id="pw3">High</td>
+                </tr>
+                <tr>
+                    <td align="center" id="pw2">Med</td>
+                </tr>
+                <tr>
+                    <td align="center" id="pw1">Low</td>
+                </tr>
+            </table>
+            <br />
+            <img id="spin_button" src="spin_off.png" alt="Spin" />
+        </div>
+    </td>
+    <td width="438" height="582" class="the_wheel" align="center" valign="center">
+        <canvas id="canvas" width="450" height="480">
+            <p style="color: white" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+        </canvas>
+    </td>
+</tr>
+</table>
+`
 
 // setupCounter(document.querySelector('#counter'))
 
 var theWheel = new Winwheel({
-  'outerRadius'     : 212,        // Set outer radius so wheel fits inside the background.
-  'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
-  'textFontSize'    : 24,         // Set default font size for the segments.
-  'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
-  'textAlignment'   : 'outer',    // Align text to outside of wheel.
-  'numSegments'     : 9,         // Specify number of segments.
+  //'outerRadius'     : 212,        // Set outer radius so wheel fits inside the background.
+  'innerRadius'     : 100,         // Make wheel hollow so segments don't go all way to center.
+  'textFontSize'    : 28,         // Set default font size for the segments.
+  'textOrientation' : 'curved', // Make text vertial so goes down from the outside of wheel.
+  'textAlignment'   : 'inner',    // Align text to outside of wheel.
+  'textFontFamily'  : 'Courier',     // Specify font family. Use monospace for curved text
+  'numSegments'     : 5,         // Specify number of segments.
   'segments'        :             // Define segments including colour and text.
   [                               // font size and test colour overridden on backrupt segments.
-     {'fillStyle' : '#ee1c24', 'text' : 'Drink'},
-     {'fillStyle' : '#3cb878', 'text' : 'Drink'},
+     {'fillStyle' : '#3cb878', 'text' : 'Drink\nJake'},
      {'fillStyle' : '#f6989d', 'text' : 'Drink'},
-     {'fillStyle' : '#00aef0', 'text' : 'Drink'},
-     {'fillStyle' : '#f26522', 'text' : 'Drink'},
-     {'fillStyle' : '#000000', 'text' : 'No Drink', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
-     {'fillStyle' : '#e70697', 'text' : 'Drink'},
-     {'fillStyle' : '#fff200', 'text' : 'Drink'},
-     {'fillStyle' : '#00aef0', 'text' : 'Drink'},
-     {'fillStyle' : '#f6989d', 'text' : 'Drink'}
+     {'fillStyle' : '#00aef0', 'text' : 'Jake\nDrink'},
+     {'fillStyle' : '#f26522', 'text' : 'Jake\nDrunk'},
+     //{'fillStyle' : '#000000', 'text' : 'No Drink', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
+     {'fillStyle' : '#e70697', 'text' : 'Jack\nDrink'}
+     //{'fillStyle' : '#fff200', 'text' : 'Drink'},
+     //{'fillStyle' : '#00aef0', 'text' : 'Drink'}
   ],
   'animation' :           // Specify the animation to use.
   {
@@ -32,15 +74,36 @@ var theWheel = new Winwheel({
       'spins'    : 3,     // Default number of complete spins.
       'callbackFinished' : alertPrize,
       'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
-      'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
-  },
+      'soundTrigger'     : 'pin',        // Specify pins are to trigger the sound, the other option is 'segment'.
+      'callbackAfter' : drawTriangle
+    },
   'pins' :				// Turn pins on.
   {
-      'number'     : 18,
+      'number'     : 20,
       'fillStyle'  : 'silver',
       'outerRadius': 4,
   }
 });
+
+//Draw the triangle pointer to the canvas for indicating wheel position
+drawTriangle();
+ 
+function drawTriangle()
+{
+    // Get the canvas context the wheel uses.
+    let ctx = theWheel.ctx;
+
+    ctx.strokeStyle = 'navy';     // Set line colour.
+    ctx.fillStyle   = 'yellow';     // Set fill colour.
+    ctx.lineWidth   = 2;
+    ctx.beginPath();              // Begin path.
+    ctx.moveTo(200, 0);           // Move to initial position.
+    ctx.lineTo(250, 0);           // Draw lines to make the shape.
+    ctx.lineTo(225, 50);
+    ctx.lineTo(200, 0);
+    ctx.stroke();                 // Complete the path by stroking (draw lines).
+    ctx.fill();                   // Then fill.
+}
 
 // Loads the tick audio sound in to an audio object.
 let audio = new Audio('tick.mp3');
@@ -67,6 +130,7 @@ let wheelSpinning = false;
 document.getElementById('pw1').addEventListener('click', function() { powerSelected(1); });
 document.getElementById('pw2').addEventListener('click', function() { powerSelected(2); });
 document.getElementById('pw3').addEventListener('click', function() { powerSelected(3); });
+powerSelected(1);
 function powerSelected(powerLevel)
 {
   // Ensure that power can't be changed while wheel is spinning.
@@ -106,6 +170,9 @@ function startSpin()
 {
   // Ensure that spinning can't be clicked again while already running.
   if (wheelSpinning == false) {
+    theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+    theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+    theWheel.draw();                // Call draw to render changes to the wheel.
       // Based on the power level selected adjust the number of spins for the wheel, the more times is has
       // to rotate with the duration of the animation the quicker the wheel spins.
       if (wheelPower == 1) {
@@ -120,8 +187,21 @@ function startSpin()
       document.getElementById('spin_button').src       = "spin_off.png";
       document.getElementById('spin_button').className = "";
 
+      //Change winning segment to be less random
+      // Get random angle inside specified segment of the wheel.
+      /*let chance = Math.random();
+      if(chance < 0.42)
+      {
+        let segmentNumber = 6;
+        let stopAt = theWheel.getRandomForSegment(segmentNumber);
+   
+        // Important thing is to set the stopAngle of the animation before stating the spin.
+        theWheel.animation.stopAngle = stopAt;
+      }*/
+
       // Begin the spin animation by calling startAnimation on the wheel object.
       theWheel.startAnimation();
+      drawTriangle();
 
       // Set to true so that power can't be changed and spin button re-enabled during
       // the current animation. The user will have to reset before spinning again.
@@ -132,16 +212,15 @@ function startSpin()
 // -------------------------------------------------------
 // Function for reset button.
 // -------------------------------------------------------
-document.getElementById('reset_button').addEventListener('click', function() { resetWheel(); });
 function resetWheel()
 {
   theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
   theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
   theWheel.draw();                // Call draw to render changes to the wheel.
 
-  document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
-  document.getElementById('pw2').className = "";
-  document.getElementById('pw3').className = "";
+  //document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
+  //document.getElementById('pw2').className = "";
+  //document.getElementById('pw3').className = "";
 
   wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
 }
@@ -153,9 +232,13 @@ function alertPrize(indicatedSegment)
 {
   // Just alert to the user what happened.
   // In a real project probably want to do something more interesting than this with the result.
-  if (indicatedSegment.text == 'Drink') {
+  if (indicatedSegment.text == 'Jake Drink') {
       alert('Sending alert to Jake!');
   } else {
       alert("No Drink for Jake");
   }
+  wheelSpinning = false;
+  document.getElementById('spin_button').src = "spin_on.png";
+  document.getElementById('spin_button').className = "clickable";
+  theWheel.animation.stopAngle = null;
 }

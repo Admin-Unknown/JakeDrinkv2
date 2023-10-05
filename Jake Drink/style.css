@@ -13,14 +13,24 @@ Verison History:
 body
 {
     font-family: arial;
+    background-image: url(./background.jpg);
+    background-position: center;
+    background-repeat: repeat;
+    background-size: cover;
 }
 
 /* Sets the background image for the wheel */
 td.the_wheel
 {
-    background-image: url(./wheel_back.png);
+    /*background-image: url(./wheel_back.png);
     background-position: center;
-    background-repeat: none;
+    background-repeat: none;*/
+}
+
+.darkbk
+{
+    color: azure;
+    background-color: rgba(51%, 51%, 51%, 0.5);
 }
 
 /* Do some css reset on selected elements */
