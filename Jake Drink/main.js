@@ -1,6 +1,4 @@
 import './style.css'
-//import * as Winwheel from 'winwheel'
-import { setupCounter } from './counter.js'
 
 
 document.querySelector('#app').innerHTML = ``
